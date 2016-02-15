@@ -3,21 +3,21 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_camera"
+            android:id="@+id/your_city"
             android:icon="@drawable/ic_menu_camera"
-            android:title="Import" />
+            android:title="Your city" />
         <item
-            android:id="@+id/nav_gallery"
+            android:id="@+id/manage_cities"
             android:icon="@drawable/ic_menu_gallery"
-            android:title="Gallery" />
+            android:title="Manage cities" />
         <item
-            android:id="@+id/nav_slideshow"
-            android:icon="@drawable/ic_menu_slideshow"
-            android:title="Slideshow" />
-        <item
-            android:id="@+id/nav_manage"
+            android:id="@+id/settings"
             android:icon="@drawable/ic_menu_manage"
-            android:title="Tools" />
+            android:title="Settings" />
+        <item
+            android:id="@+id/info"
+            android:icon="@drawable/ic_menu_slideshow"
+            android:title="Info" />
     </group>
 
     <item android:title="Communicate">

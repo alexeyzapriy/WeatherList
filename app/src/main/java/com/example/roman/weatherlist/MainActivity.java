@@ -3,6 +3,9 @@ package com.example.roman.weatherlist;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -12,9 +15,16 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.FrameLayout;
+import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+    private String[] dataSet = { "Qaawws", "Bkxcsf", "sdfksskvuksjv fvjufvidfub", "sdfsdfs", "dfsdfsdf", "sfhsbfbsv", "sdfhsfhsmhfdhm",
+            "111111111", "2222222222", "3333333333", "444444444", "55555555555", "6666666666", "77777777777777",
+            "888888", "999999999", "1010101010110", "111111111111", "12121212121212", "13131313131313131313",
+            "14141414141414", "151515151515", "16161616161616", "17171771717171", "1818181818818181" };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,16 +87,25 @@ public class MainActivity extends AppCompatActivity
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
+        FrameLayout main_container = (FrameLayout) findViewById(R.id.main_container);
+        main_container.removeAllViews();
+        LayoutInflater inflater = LayoutInflater.from(this);
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
+        if (id == R.id.your_city) {
+            RecyclerView list = (RecyclerView) inflater.inflate(R.layout.recycler_view, null);
+            LinearLayoutManager manager = new LinearLayoutManager(this);
+            list.setLayoutManager(manager);
+            CardsRecyclerAdapter adapter = new CardsRecyclerAdapter(this, dataSet);
+            list.setAdapter(adapter);
+            main_container.addView(list);
+        } else if (id == R.id.manage_cities) {
 
-        } else if (id == R.id.nav_slideshow) {
+        } else if (id == R.id.settings) {
 
-        } else if (id == R.id.nav_manage) {
+        } else if (id == R.id.info) {
+            TextView tv = (TextView)findViewById(R.id.textView1);
+            tv.setText(R.string.info);
 
         } else if (id == R.id.nav_share) {
 
