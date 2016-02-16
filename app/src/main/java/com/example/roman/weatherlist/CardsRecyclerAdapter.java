@@ -40,7 +40,7 @@ public class CardsRecyclerAdapter extends RecyclerView.Adapter<CardsRecyclerAdap
 
     @Override
     public void onBindViewHolder(CardsRecyclerAdapter.ViewHolder holder, int position) {
-        TextView textView = (TextView) holder.mCard.findViewById(R.id.info_text);
+        TextView textView = (TextView) holder.mCard.findViewById(R.id.city_field);
        /* Drawable img = context.getResources().getDrawable(images[rand.nextInt(7)]);
         ((ImageView)holder.mCard.findViewById(R.id.imageView)).setImageDrawable(img);*/
         textView.setText(mDataset[position]);

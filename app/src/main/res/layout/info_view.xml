@@ -12,23 +12,20 @@
         android:id="@+id/text1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="@string/info"
-        android:autoText="true"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:textColor="#eee0e0" />
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="@string/info"/>
 
     <TextView
         android:id="@+id/text2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textSize="13sp"
-        android:text="@string/made"
         android:layout_below="@+id/text1"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="42dp" />
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textSize="13sp"
+        android:text="@string/made"/>
     <ImageView
         android:id="@+id/info_icon"
         android:layout_width="100dp"
