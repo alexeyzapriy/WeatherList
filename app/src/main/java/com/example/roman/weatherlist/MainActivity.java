@@ -16,6 +16,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity
@@ -104,13 +105,8 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.settings) {
 
         } else if (id == R.id.info) {
-            TextView tv = (TextView)findViewById(R.id.textView1);
-            tv.setText(R.string.info);
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
+            RelativeLayout rl = (RelativeLayout)inflater.inflate(R.layout.info_view, null);
+            main_container.addView(rl);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
