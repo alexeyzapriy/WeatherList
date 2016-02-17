@@ -4,9 +4,11 @@ import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.android.volley.toolbox.ImageLoader;
+import com.android.volley.toolbox.NetworkImageView;
 
 import java.util.ArrayList;
 
@@ -17,6 +19,7 @@ public class CardsRecyclerAdapter extends RecyclerView.Adapter<CardsRecyclerAdap
 
     private Context context;
     private ArrayList <Weather> mDataset;
+    private ImageLoader mImageLoader = MySingleton.getInstance(context).getImageLoader();
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public LinearLayout mCard;
@@ -45,7 +48,9 @@ public class CardsRecyclerAdapter extends RecyclerView.Adapter<CardsRecyclerAdap
     public void onBindViewHolder(CardsRecyclerAdapter.ViewHolder holder, int position) {
         TextView textView = (TextView) holder.mCard.findViewById(R.id.city_field);
 
-        ((ImageView)holder.mCard.findViewById(R.id.imageView)).setImageBitmap(mDataset.get(position).getBitmap());
+        NetworkImageView networkImageView = (NetworkImageView) holder.mCard.findViewById(R.id.weather_icon);
+        networkImageView.setImageUrl(mDataset.get(position).getIconUrl(), mImageLoader);
+
         textView.setText(mDataset.get(position).getTemp(true));
     }
 

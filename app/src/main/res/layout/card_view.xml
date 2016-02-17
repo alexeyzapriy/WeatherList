@@ -40,14 +40,13 @@
         android:layout_centerHorizontal="true"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textSize="13sp" />
-    <ImageView
+    <com.android.volley.toolbox.NetworkImageView
         android:id="@+id/weather_icon"
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
-        android:background="#fa2255"
-        />
+        android:background="#fa2255" />
     <TextView
         android:id="@+id/current_temperature_field"
         android:layout_width="wrap_content"
