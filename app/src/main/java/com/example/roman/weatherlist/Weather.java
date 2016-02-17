@@ -1,6 +1,9 @@
 package com.example.roman.weatherlist;
 
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.ColorFilter;
+import android.graphics.drawable.Drawable;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -12,7 +15,7 @@ import java.util.Locale;
 /**
  * Created by Roman on 16.02.2016.
  */
-public class Weather {
+public class Weather extends Drawable {
     private String cityName;
     private String country;
     private String description;
@@ -82,5 +85,25 @@ public class Weather {
     public String getDate(){
         DateFormat df = DateFormat.getDateInstance();
         return df.format(dt);
+    }
+
+    @Override
+    public void draw(Canvas canvas) {
+
+    }
+
+    @Override
+    public void setAlpha(int alpha) {
+
+    }
+
+    @Override
+    public void setColorFilter(ColorFilter colorFilter) {
+
+    }
+
+    @Override
+    public int getOpacity() {
+        return 0;
     }
 }

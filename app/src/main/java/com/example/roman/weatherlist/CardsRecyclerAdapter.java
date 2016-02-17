@@ -4,8 +4,11 @@ import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import java.util.ArrayList;
 
 /**
  * Created by Roman on 15.02.2016.
@@ -13,7 +16,7 @@ import android.widget.TextView;
 public class CardsRecyclerAdapter extends RecyclerView.Adapter<CardsRecyclerAdapter.ViewHolder> {
 
     private Context context;
-    private String[] mDataset;
+    private ArrayList <Weather> mDataset;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public LinearLayout mCard;
@@ -23,7 +26,7 @@ public class CardsRecyclerAdapter extends RecyclerView.Adapter<CardsRecyclerAdap
         }
     }
 
-    public CardsRecyclerAdapter(Context context, String[] dataSet) {
+    public CardsRecyclerAdapter(Context context, ArrayList <Weather> dataSet) {
         this.context = context;
         mDataset = dataSet;
 
@@ -41,13 +44,13 @@ public class CardsRecyclerAdapter extends RecyclerView.Adapter<CardsRecyclerAdap
     @Override
     public void onBindViewHolder(CardsRecyclerAdapter.ViewHolder holder, int position) {
         TextView textView = (TextView) holder.mCard.findViewById(R.id.city_field);
-       /* Drawable img = context.getResources().getDrawable(images[rand.nextInt(7)]);
-        ((ImageView)holder.mCard.findViewById(R.id.imageView)).setImageDrawable(img);*/
-        textView.setText(mDataset[position]);
+
+        ((ImageView)holder.mCard.findViewById(R.id.imageView)).setImageBitmap(mDataset.get(position).getBitmap());
+        textView.setText(mDataset.get(position).getTemp(true));
     }
 
     @Override
     public int getItemCount() {
-        return mDataset.length;
+        return mDataset.size();
     }
 }
