@@ -1,5 +1,6 @@
 package com.example.roman.weatherlist;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.ColorFilter;
@@ -21,11 +22,12 @@ public class Weather extends Drawable {
     private String description;
     private String humidity;
     private String pressure;
+    private String icon;
     private double temp;
     private Date dt;
     private Bitmap iconWeather;
 
-    public Weather(JSONObject j){
+    public Weather(Context context, JSONObject j){
 
         try {
             JSONObject details = j.getJSONArray("weather").getJSONObject(0);
@@ -36,6 +38,7 @@ public class Weather extends Drawable {
             description = details.getString("description").toUpperCase(Locale.US);
             humidity = main.getString("humidity") + "%";
             pressure = main.getString("pressure") + " hPa";
+            icon = context.getString(R.string.imgUrl) + details.getString("icon") + ".png";
             temp = main.getDouble("temp");
             dt = new Date(j.getLong("dt")*1000);
 
@@ -75,10 +78,10 @@ public class Weather extends Drawable {
 
     public String getTemp(boolean isC) {
         if (isC) {
-            return String.format("%.2f", temp + " C");
+            return String.format("%.2f", temp) + " C";
         } else {
             double f = temp * 1.8 + 32;
-            return String.format("%.2f", f + " F");
+            return String.format("%.2f", f) + " F";
         }
     }
 
@@ -106,4 +109,8 @@ public class Weather extends Drawable {
     public int getOpacity() {
         return 0;
     }
+
+    public String getIconUrl() {
+        return icon;
+        }
 }
