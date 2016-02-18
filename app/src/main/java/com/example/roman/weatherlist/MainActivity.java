@@ -106,10 +106,8 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.your_city) {
-            String [] arrCity = {"lviv", "kiiv", "rome", "kharkiv"};
-            for (int i = 0; i < arrCity.length; i++){
-                makeWeatherObj(arrCity[i]);
-            }
+            String [] arrCities = {"lviv", "london", "rome", "kharkiv"};
+             makeWeatherObj(arrCities);
 
         } else if (id == R.id.manage_cities) {
 
@@ -125,33 +123,37 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-    private void makeWeatherObj(String city) {
-        JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.GET,
-                        String.format(OPEN_WEATHER_MAP_API, city, this.getString(R.string.open_weather_maps_app_id)),
-                        null, new Response.Listener<JSONObject>() {
+    private void makeWeatherObj(final String [] cities) {
+        for (int i = 0; i < cities.length; i++){
 
-                    @Override
-                    public void onResponse(JSONObject response) {
+            JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.GET,
+                    String.format(OPEN_WEATHER_MAP_API, cities[i], this.getString(R.string.open_weather_maps_app_id)),
+                    null, new Response.Listener<JSONObject>() {
 
-                        try{
-                            final Weather weather = new Weather(MainActivity.this, response);
-                            data.add(weather);
-                            onDataReceived();
-                        }catch(Exception e){
-                            Log.e("SimpleWeather", "One or more fields not found in the JSON data");
-                        }
+                @Override
+                public void onResponse(JSONObject response) {
+
+                    try{
+                        final Weather weather = new Weather(MainActivity.this, response);
+                        data.add(weather);
+                        if(data.size() == cities.length)onDataReceived();
+                    }catch(Exception e){
+                        Log.e("SimpleWeather", "One or more fields not found in the JSON data");
                     }
-                }, new Response.ErrorListener() {
+                }
+            }, new Response.ErrorListener() {
 
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        // TODO Auto-generated method stub
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    // TODO Auto-generated method stub
 
-                    }
-                });
+                }
+            });
 
 
-        MySingleton.getInstance(this).addToRequestQueue(jsObjRequest);
+            MySingleton.getInstance(this).addToRequestQueue(jsObjRequest);
+        }
+
     }
 
     private void onDataReceived() {
