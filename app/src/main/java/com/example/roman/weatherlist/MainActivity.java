@@ -1,22 +1,21 @@
 package com.example.roman.weatherlist;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 
@@ -24,17 +23,18 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.roman.weatherlist.models.WeatherModel;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
-import org.json.JSONObject;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-    private String OPEN_WEATHER_MAP_API = "http://api.openweathermap.org/data/2.5/weather?q=%s&units=metric&appid=%s";
     public RequestQueue queue;
-    private ArrayList<Weather> data = new ArrayList<Weather>();
+    private ArrayList<WeatherModel> data = new ArrayList<>();
     private FrameLayout mMainContainer;
 
     @Override
@@ -124,17 +124,16 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void makeWeatherObj(final String [] cities) {
+        final Gson gson = new GsonBuilder().serializeNulls().create();
+
         for (int i = 0; i < cities.length; i++){
-
-            JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.GET,
-                    String.format(OPEN_WEATHER_MAP_API, cities[i], this.getString(R.string.open_weather_maps_app_id)),
-                    null, new Response.Listener<JSONObject>() {
-
+            String url = String.format(Consts.WEATHER_SERVICE_URL, cities[i]);
+            StringRequest request = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
                 @Override
-                public void onResponse(JSONObject response) {
-
+                public void onResponse(String response) {
+                    Log.i("Weather Response", response);
                     try{
-                        final Weather weather = new Weather(MainActivity.this, response);
+                        WeatherModel weather = gson.fromJson(response, WeatherModel.class);
                         data.add(weather);
                         if(data.size() == cities.length)onDataReceived();
                     }catch(Exception e){
@@ -150,8 +149,7 @@ public class MainActivity extends AppCompatActivity
                 }
             });
 
-
-            MySingleton.getInstance(this).addToRequestQueue(jsObjRequest);
+            MySingleton.getInstance(this).addToRequestQueue(request);
         }
 
     }
