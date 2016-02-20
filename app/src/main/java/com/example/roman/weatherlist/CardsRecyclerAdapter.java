@@ -9,9 +9,10 @@ import android.widget.TextView;
 
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
+import com.example.roman.weatherlist.models.WeatherModel;
+import com.example.roman.weatherlist.presenters.WeatherPresenter;
 
 import java.util.ArrayList;
-import java.util.Locale;
 
 /**
  * Created by Roman on 15.02.2016.
@@ -19,7 +20,7 @@ import java.util.Locale;
 public class CardsRecyclerAdapter extends RecyclerView.Adapter<CardsRecyclerAdapter.ViewHolder> {
 
     private Context context;
-    private ArrayList <Weather> mDataset;
+    private ArrayList <WeatherModel> mDataset;
     private ImageLoader mImageLoader = MySingleton.getInstance(context).getImageLoader();
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -30,7 +31,7 @@ public class CardsRecyclerAdapter extends RecyclerView.Adapter<CardsRecyclerAdap
         }
     }
 
-    public CardsRecyclerAdapter(Context context, ArrayList <Weather> dataSet) {
+    public CardsRecyclerAdapter(Context context, ArrayList <WeatherModel> dataSet) {
         this.context = context;
         mDataset = dataSet;
 
@@ -52,16 +53,18 @@ public class CardsRecyclerAdapter extends RecyclerView.Adapter<CardsRecyclerAdap
         TextView tvDetails = (TextView) holder.mCard.findViewById(R.id.details_field);
         TextView tvTemperat = (TextView) holder.mCard.findViewById(R.id.current_temperature_field);
         NetworkImageView networkImageView = (NetworkImageView) holder.mCard.findViewById(R.id.weather_icon);
-        networkImageView.setImageUrl(mDataset.get(position).getIconUrl(), mImageLoader);
 
-        tvCity.setText(mDataset.get(position).getCityName().toUpperCase(Locale.US) + ", " + mDataset.get(position).getCountry());
-        tvDetails.setText(mDataset.get(position).getDescription().toUpperCase(Locale.US)
+        WeatherPresenter weatherPresenter = new WeatherPresenter(mDataset.get(position));
+        networkImageView.setImageUrl(weatherPresenter.getIconUrl(), mImageLoader);
+
+        tvCity.setText(weatherPresenter.getCity() + ", " + weatherPresenter.getCountry());
+        tvDetails.setText(weatherPresenter.getDescription()
                 + "\n" + "Humidity: "
-                + mDataset.get(position).getHumidity()
+                + weatherPresenter.getHumidity()
                 + "\n" + "Pressure: "
-                + mDataset.get(position).getPressure());
-        tvTemperat.setText(mDataset.get(position).getTemp(true));
-        tvUpdated.setText("Last update: " + mDataset.get(position).getDate());
+                + weatherPresenter.getPressure());
+        tvTemperat.setText(weatherPresenter.getTempC());
+        tvUpdated.setText("Last update: " + weatherPresenter.getUpdateTime());
     }
 
     @Override
