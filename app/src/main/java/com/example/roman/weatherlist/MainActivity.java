@@ -33,9 +33,11 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
     public RequestQueue queue;
     private ArrayList<WeatherModel> data = new ArrayList<>();
     private FrameLayout mMainContainer;
+    private Cities cities;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +65,17 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         queue = Volley.newRequestQueue(this);
+
+        String[] arrCities = {"lviv", "london", "rome", "kharkiv", "zmiiv"};
+        cities = new Cities(this);
+        cities.setMyCity("zmiiv");
+        cities.setCities(arrCities);
+
+        mMainContainer = (FrameLayout) findViewById(R.id.main_container);
+        mMainContainer.removeAllViews();
+
+        makeWeatherObj(cities.getCities());
+
     }
 
     @Override
@@ -77,19 +90,14 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
         }
@@ -106,15 +114,12 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.your_city) {
-            String [] arrCities = {"lviv", "london", "rome", "kharkiv"};
-             makeWeatherObj(arrCities);
-
-        } else if (id == R.id.manage_cities) {
-
+            data.clear();
+            makeWeatherObj(cities.getMyCity());
         } else if (id == R.id.settings) {
 
         } else if (id == R.id.info) {
-            RelativeLayout rl = (RelativeLayout)inflater.inflate(R.layout.info_view, null);
+            RelativeLayout rl = (RelativeLayout) inflater.inflate(R.layout.info_view, null);
             mMainContainer.addView(rl);
         }
 
@@ -123,20 +128,20 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-    private void makeWeatherObj(final String [] cities) {
+    private void makeWeatherObj(final String[] cities) {
         final Gson gson = new GsonBuilder().serializeNulls().create();
-
-        for (int i = 0; i < cities.length; i++){
+        for (int i = 0; i < cities.length; i++) {
             String url = String.format(Consts.WEATHER_SERVICE_URL, cities[i]);
             StringRequest request = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+
                 @Override
                 public void onResponse(String response) {
                     Log.i("Weather Response", response);
-                    try{
+                    try {
                         WeatherModel weather = gson.fromJson(response, WeatherModel.class);
                         data.add(weather);
-                        if(data.size() == cities.length)onDataReceived();
-                    }catch(Exception e){
+                        if (data.size() == cities.length) onDataReceived();
+                    } catch (Exception e) {
                         Log.e("SimpleWeather", "One or more fields not found in the JSON data");
                     }
                 }
@@ -144,14 +149,39 @@ public class MainActivity extends AppCompatActivity
 
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    // TODO Auto-generated method stub
-
                 }
             });
 
             MySingleton.getInstance(this).addToRequestQueue(request);
         }
 
+    }
+
+    private void makeWeatherObj(final String city) {
+        String url = String.format(Consts.WEATHER_SERVICE_URL, city);
+        final Gson gson = new GsonBuilder().serializeNulls().create();
+
+        StringRequest request = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+
+            @Override
+            public void onResponse(String response) {
+                Log.i("Weather Response", response);
+                try {
+                    WeatherModel weather = gson.fromJson(response, WeatherModel.class);
+                    data.add(weather);
+                    onDataReceived();
+                } catch (Exception e) {
+                    Log.e("SimpleWeather", "One or more fields not found in the JSON data");
+                }
+            }
+        }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+            }
+        });
+
+        MySingleton.getInstance(this).addToRequestQueue(request);
     }
 
     private void onDataReceived() {

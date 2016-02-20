@@ -14,9 +14,6 @@ import com.example.roman.weatherlist.presenters.WeatherPresenter;
 
 import java.util.ArrayList;
 
-/**
- * Created by Roman on 15.02.2016.
- */
 public class CardsRecyclerAdapter extends RecyclerView.Adapter<CardsRecyclerAdapter.ViewHolder> {
 
     private Context context;
@@ -48,15 +45,15 @@ public class CardsRecyclerAdapter extends RecyclerView.Adapter<CardsRecyclerAdap
 
     @Override
     public void onBindViewHolder(CardsRecyclerAdapter.ViewHolder holder, int position) {
+
         TextView tvCity = (TextView) holder.mCard.findViewById(R.id.city_field);
         TextView tvUpdated = (TextView) holder.mCard.findViewById(R.id.updated_field);
         TextView tvDetails = (TextView) holder.mCard.findViewById(R.id.details_field);
         TextView tvTemperat = (TextView) holder.mCard.findViewById(R.id.current_temperature_field);
         NetworkImageView networkImageView = (NetworkImageView) holder.mCard.findViewById(R.id.weather_icon);
-
         WeatherPresenter weatherPresenter = new WeatherPresenter(mDataset.get(position));
-        networkImageView.setImageUrl(weatherPresenter.getIconUrl(), mImageLoader);
 
+        networkImageView.setImageUrl(weatherPresenter.getIconUrl(), mImageLoader);
         tvCity.setText(weatherPresenter.getCity() + ", " + weatherPresenter.getCountry());
         tvDetails.setText(weatherPresenter.getDescription()
                 + "\n" + "Humidity: "

@@ -5,9 +5,9 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="action_settings">Settings</string>
+
     <string name="info">Weather site openweathermap.org</string>
     <string name="made">The program is made for free distribution.</string>
-    <string name="open_weather_maps_app_id">a41283afb1824a7893a04e68e1eb543a</string>
-    <string name="imgUrl">http://openweathermap.org/img/w/</string>
     <string name="place_not_found">city not found</string>
+
 </resources>
