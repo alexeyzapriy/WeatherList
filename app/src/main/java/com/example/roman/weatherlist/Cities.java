@@ -16,6 +16,18 @@ public class Cities {
 
     public void setMyCity(String city){
         prefs.edit().putString("myCity", city).commit();
+        String s = prefs.getString("cities", "Kharkiv");
+        String [] arr = TextUtils.split(s, ",");
+        boolean flag = false;
+        for (String i: arr) {
+            if(i.compareToIgnoreCase(city) == 0){
+                flag = true;
+            }
+        }
+
+        if(flag){
+            prefs.edit().putString("cities", s + ", " + city).commit();
+        }
     }
 
     public void setCities(String [] cities){
