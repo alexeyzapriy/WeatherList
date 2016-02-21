@@ -10,4 +10,7 @@
     <string name="made">The program is made for free distribution.</string>
     <string name="place_not_found">city not found</string>
 
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
 </resources>

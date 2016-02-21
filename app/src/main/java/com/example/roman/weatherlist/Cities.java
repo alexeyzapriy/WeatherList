@@ -25,7 +25,7 @@ public class Cities {
             }
         }
 
-        if(flag){
+        if(!flag){
             prefs.edit().putString("cities", s + ", " + city).commit();
         }
     }

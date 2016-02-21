@@ -25,6 +25,9 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.roman.weatherlist.fragments.InfoFragment;
+import com.example.roman.weatherlist.fragments.ManageFragment;
+import com.example.roman.weatherlist.fragments.SettingsFragment;
 import com.example.roman.weatherlist.models.WeatherModel;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -110,17 +113,28 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         mMainContainer = (FrameLayout) findViewById(R.id.main_container);
         mMainContainer.removeAllViews();
-        LayoutInflater inflater = LayoutInflater.from(this);
         int id = item.getItemId();
 
         if (id == R.id.your_city) {
-            data.clear();
-            makeWeatherObj(cities.getMyCity());
+            Bundle bundle = new Bundle();
+            bundle.putBoolean("isMyCity", true);
+            SettingsFragment settingsFragment = new SettingsFragment();
+            settingsFragment.setArguments(bundle);
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.main_container, settingsFragment)
+                    .commit();
         } else if (id == R.id.settings) {
-
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.main_container, new SettingsFragment())
+                    .commit();
+        } else if (id == R.id.manage_cities) {
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.main_container, new ManageFragment())
+                    .commit();
         } else if (id == R.id.info) {
-            RelativeLayout rl = (RelativeLayout) inflater.inflate(R.layout.info_view, null);
-            mMainContainer.addView(rl);
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.main_container, new InfoFragment())
+                    .commit();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
