@@ -32,53 +32,27 @@ import java.util.ArrayList;
  * Activities that contain this fragment must implement the
  * {@link CardsListFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link CardsListFragment#newInstance} factory method to
- * create an instance of this fragment.
  */
 public class CardsListFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
 
-    private ArrayList<WeatherModel> data = new ArrayList<>();
+    public static final String IS_MY_CITY = "isMyCity";
     private FrameLayout mMainContainer;
     private Cities cities;
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
+    private boolean mIsMyCity;
+    private ArrayList<WeatherModel> mData = new ArrayList<>();
     private OnFragmentInteractionListener mListener;
+    private CardsRecyclerAdapter mAdapter;
+    private RecyclerView mRecyclerView;
 
     public CardsListFragment() {
         // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment CardsListFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static CardsListFragment newInstance(String param1, String param2) {
-        CardsListFragment fragment = new CardsListFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            mIsMyCity = getArguments().getBoolean(IS_MY_CITY);
         }
     }
 
@@ -90,7 +64,13 @@ public class CardsListFragment extends Fragment {
         cities.setMyCity("zmiiv");
         cities.setCities(arrCities);
         makeWeatherObj(cities.getCities());
-        return inflater.inflate(R.layout.recycler_view, container, false);
+        mRecyclerView = (RecyclerView) inflater.inflate(R.layout.recycler_view, container, false);
+        final LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
+        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        mRecyclerView.setLayoutManager(layoutManager);
+        mAdapter = new CardsRecyclerAdapter(getActivity());
+        mRecyclerView.setAdapter(mAdapter);
+        return mRecyclerView;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -143,10 +123,9 @@ public class CardsListFragment extends Fragment {
                     Log.i("Weather Response", response);
                     try {
                         WeatherModel weather = gson.fromJson(response, WeatherModel.class);
-                        data.add(weather);
-                        if (data.size() == cities.length) onDataReceived();
+                        onDataReceived(weather, cities.length);
                     } catch (Exception e) {
-                        Log.e("SimpleWeather", "One or more fields not found in the JSON data");
+                        Log.e("SimpleWeather", "One or more fields not found in the JSON data: " + e);
                     }
                 }
             }, new Response.ErrorListener() {
@@ -161,12 +140,10 @@ public class CardsListFragment extends Fragment {
 
     }
 
-    private void onDataReceived() {
-        RecyclerView list = (RecyclerView) LayoutInflater.from(getActivity()).inflate(R.layout.recycler_view, null);
-        LinearLayoutManager manager = new LinearLayoutManager(getActivity());
-        list.setLayoutManager(manager);
-        CardsRecyclerAdapter adapter = new CardsRecyclerAdapter(getActivity(), data);
-        list.setAdapter(adapter);
-        mMainContainer.addView(list);
+    synchronized private void onDataReceived(WeatherModel weather, int total) {
+        if (mData.size() == total) return;
+
+        mData.add(weather);
+        if (mData.size() == total) mAdapter.setDataSet(mData);
     }
 }

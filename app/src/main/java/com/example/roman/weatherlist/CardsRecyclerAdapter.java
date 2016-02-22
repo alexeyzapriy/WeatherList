@@ -17,7 +17,7 @@ import java.util.ArrayList;
 public class CardsRecyclerAdapter extends RecyclerView.Adapter<CardsRecyclerAdapter.ViewHolder> {
 
     private Context context;
-    private ArrayList <WeatherModel> mDataset;
+    private ArrayList <WeatherModel> mDataSet = new ArrayList<>();
     private ImageLoader mImageLoader = MySingleton.getInstance(context).getImageLoader();
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -28,10 +28,8 @@ public class CardsRecyclerAdapter extends RecyclerView.Adapter<CardsRecyclerAdap
         }
     }
 
-    public CardsRecyclerAdapter(Context context, ArrayList <WeatherModel> dataSet) {
+    public CardsRecyclerAdapter(Context context) {
         this.context = context;
-        mDataset = dataSet;
-
     }
 
     @Override
@@ -51,7 +49,7 @@ public class CardsRecyclerAdapter extends RecyclerView.Adapter<CardsRecyclerAdap
         TextView tvDetails = (TextView) holder.mCard.findViewById(R.id.details_field);
         TextView tvTemperat = (TextView) holder.mCard.findViewById(R.id.current_temperature_field);
         NetworkImageView networkImageView = (NetworkImageView) holder.mCard.findViewById(R.id.weather_icon);
-        WeatherPresenter weatherPresenter = new WeatherPresenter(mDataset.get(position));
+        WeatherPresenter weatherPresenter = new WeatherPresenter(mDataSet.get(position));
 
         networkImageView.setImageUrl(weatherPresenter.getIconUrl(), mImageLoader);
         tvCity.setText(weatherPresenter.getCity() + ", " + weatherPresenter.getCountry());
@@ -66,6 +64,12 @@ public class CardsRecyclerAdapter extends RecyclerView.Adapter<CardsRecyclerAdap
 
     @Override
     public int getItemCount() {
-        return mDataset.size();
+        return mDataSet.size();
+    }
+
+    public void setDataSet(ArrayList<WeatherModel> dataSet){
+        mDataSet.clear();
+        mDataSet.addAll(dataSet);
+        notifyDataSetChanged();
     }
 }
