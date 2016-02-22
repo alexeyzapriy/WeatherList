@@ -1,5 +1,6 @@
 package com.example.roman.weatherlist;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -8,34 +9,26 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
-import android.widget.RelativeLayout;
 
-import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.roman.weatherlist.fragments.CardsListFragment;
 import com.example.roman.weatherlist.fragments.InfoFragment;
 import com.example.roman.weatherlist.fragments.ManageFragment;
 import com.example.roman.weatherlist.fragments.SettingsFragment;
 import com.example.roman.weatherlist.models.WeatherModel;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener,
+                   CardsListFragment.OnFragmentInteractionListener {
 
     public RequestQueue queue;
     private ArrayList<WeatherModel> data = new ArrayList<>();
@@ -75,9 +68,10 @@ public class MainActivity extends AppCompatActivity
         cities.setCities(arrCities);
 
         mMainContainer = (FrameLayout) findViewById(R.id.main_container);
-        mMainContainer.removeAllViews();
 
-        makeWeatherObj(cities.getCities());
+        getSupportFragmentManager().beginTransaction()
+                .add(R.id.main_container, new CardsListFragment())
+                .commit();
 
     }
 
@@ -112,28 +106,27 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         mMainContainer = (FrameLayout) findViewById(R.id.main_container);
-        mMainContainer.removeAllViews();
         int id = item.getItemId();
 
         if (id == R.id.your_city) {
             Bundle bundle = new Bundle();
-            bundle.putBoolean("isMyCity", true);
-            SettingsFragment settingsFragment = new SettingsFragment();
-            settingsFragment.setArguments(bundle);
+            bundle.putBoolean(CardsListFragment.IS_MY_CITY, true);
+            CardsListFragment cardsListFragment = new CardsListFragment();
+            cardsListFragment.setArguments(bundle);
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.main_container, settingsFragment)
+                    .replace(R.id.main_container, cardsListFragment)
                     .commit();
         } else if (id == R.id.settings) {
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.main_container, new SettingsFragment())
+                    .replace(R.id.main_container, new SettingsFragment())
                     .commit();
         } else if (id == R.id.manage_cities) {
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.main_container, new ManageFragment())
+                    .replace(R.id.main_container, new ManageFragment())
                     .commit();
         } else if (id == R.id.info) {
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.main_container, new InfoFragment())
+                    .replace(R.id.main_container, new InfoFragment())
                     .commit();
         }
 
@@ -142,68 +135,8 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-    private void makeWeatherObj(final String[] cities) {
-        final Gson gson = new GsonBuilder().serializeNulls().create();
-        for (int i = 0; i < cities.length; i++) {
-            String url = String.format(Consts.WEATHER_SERVICE_URL, cities[i]);
-            StringRequest request = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
-
-                @Override
-                public void onResponse(String response) {
-                    Log.i("Weather Response", response);
-                    try {
-                        WeatherModel weather = gson.fromJson(response, WeatherModel.class);
-                        data.add(weather);
-                        if (data.size() == cities.length) onDataReceived();
-                    } catch (Exception e) {
-                        Log.e("SimpleWeather", "One or more fields not found in the JSON data");
-                    }
-                }
-            }, new Response.ErrorListener() {
-
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                }
-            });
-
-            MySingleton.getInstance(this).addToRequestQueue(request);
-        }
-
-    }
-
-    private void makeWeatherObj(final String city) {
-        String url = String.format(Consts.WEATHER_SERVICE_URL, city);
-        final Gson gson = new GsonBuilder().serializeNulls().create();
-
-        StringRequest request = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
-
-            @Override
-            public void onResponse(String response) {
-                Log.i("Weather Response", response);
-                try {
-                    WeatherModel weather = gson.fromJson(response, WeatherModel.class);
-                    data.add(weather);
-                    onDataReceived();
-                } catch (Exception e) {
-                    Log.e("SimpleWeather", "One or more fields not found in the JSON data");
-                }
-            }
-        }, new Response.ErrorListener() {
-
-            @Override
-            public void onErrorResponse(VolleyError error) {
-            }
-        });
-
-        MySingleton.getInstance(this).addToRequestQueue(request);
-    }
-
-    private void onDataReceived() {
-        RecyclerView list = (RecyclerView) LayoutInflater.from(this).inflate(R.layout.recycler_view, null);
-        LinearLayoutManager manager = new LinearLayoutManager(this);
-        list.setLayoutManager(manager);
-        CardsRecyclerAdapter adapter = new CardsRecyclerAdapter(this, data);
-        list.setAdapter(adapter);
-        mMainContainer.addView(list);
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+        Log.i("Fragment", "uri: " + uri.toString());
     }
 }
