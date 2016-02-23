@@ -4,19 +4,19 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/your_city"
-            android:icon="@drawable/city"
+            android:icon="@drawable/ic_account_balance_black_18dp"
             android:title="Your city" />
         <item
             android:id="@+id/manage_cities"
-            android:icon="@drawable/pencil"
+            android:icon="@drawable/ic_card_travel_black_18dp"
             android:title="Manage cities" />
         <item
             android:id="@+id/settings"
-            android:icon="@drawable/tools"
+            android:icon="@drawable/ic_settings_black_18dp"
             android:title="Settings" />
         <item
             android:id="@+id/info"
-            android:icon="@drawable/info"
+            android:icon="@drawable/ic_info_outline_black_18dp"
             android:title="Info" />
     </group>
 

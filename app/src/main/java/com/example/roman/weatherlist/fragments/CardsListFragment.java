@@ -27,12 +27,6 @@ import com.google.gson.GsonBuilder;
 
 import java.util.ArrayList;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link CardsListFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- */
 public class CardsListFragment extends Fragment {
 
     public static final String IS_MY_CITY = "isMyCity";

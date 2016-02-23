@@ -14,7 +14,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.FrameLayout;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
@@ -22,9 +21,6 @@ import com.example.roman.weatherlist.fragments.CardsListFragment;
 import com.example.roman.weatherlist.fragments.InfoFragment;
 import com.example.roman.weatherlist.fragments.ManageFragment;
 import com.example.roman.weatherlist.fragments.SettingsFragment;
-import com.example.roman.weatherlist.models.WeatherModel;
-
-import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
