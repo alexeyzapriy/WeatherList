@@ -31,8 +31,7 @@ public class MainActivity extends AppCompatActivity
                    CardsListFragment.OnFragmentInteractionListener {
 
     public RequestQueue queue;
-    private ArrayList<WeatherModel> data = new ArrayList<>();
-    private FrameLayout mMainContainer;
+
     private Cities cities;
 
     @Override
@@ -67,11 +66,7 @@ public class MainActivity extends AppCompatActivity
         cities.setMyCity("zmiiv");
         cities.setCities(arrCities);
 
-        mMainContainer = (FrameLayout) findViewById(R.id.main_container);
-
-        getSupportFragmentManager().beginTransaction()
-                .add(R.id.main_container, new CardsListFragment())
-                .commit();
+        setCardsListFragment(false);
 
     }
 
@@ -105,17 +100,10 @@ public class MainActivity extends AppCompatActivity
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-        mMainContainer = (FrameLayout) findViewById(R.id.main_container);
         int id = item.getItemId();
 
         if (id == R.id.your_city) {
-            Bundle bundle = new Bundle();
-            bundle.putBoolean(CardsListFragment.IS_MY_CITY, true);
-            CardsListFragment cardsListFragment = new CardsListFragment();
-            cardsListFragment.setArguments(bundle);
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.main_container, cardsListFragment)
-                    .commit();
+            setCardsListFragment(true);
         } else if (id == R.id.settings) {
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.main_container, new SettingsFragment())
@@ -133,6 +121,16 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private void setCardsListFragment( boolean isMyCity) {
+        Bundle bundle = new Bundle();
+        bundle.putBoolean(CardsListFragment.IS_MY_CITY, isMyCity);
+        CardsListFragment cardsListFragment = new CardsListFragment();
+        cardsListFragment.setArguments(bundle);
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.main_container, cardsListFragment)
+                .commit();
     }
 
     @Override

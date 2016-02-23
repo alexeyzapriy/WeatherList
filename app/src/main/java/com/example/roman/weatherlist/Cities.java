@@ -10,8 +10,11 @@ public class Cities {
         prefs = activity.getPreferences(Activity.MODE_PRIVATE);
     }
 
-    public String getMyCity(){
-        return prefs.getString("myCity", "Kharkiv");
+    public String [] getMyCity(){
+        String city = prefs.getString("myCity", "Kharkiv");
+        String [] arr = new String[1];
+        arr[0] = city;
+        return arr;
     }
 
     public void setMyCity(String city){
