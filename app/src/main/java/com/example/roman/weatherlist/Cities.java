@@ -6,19 +6,24 @@ import android.text.TextUtils;
 
 public class Cities {
     private SharedPreferences prefs;
+
     public Cities(Activity activity){
         prefs = activity.getPreferences(Activity.MODE_PRIVATE);
+
     }
 
     public String [] getMyCity(){
         String city = prefs.getString("myCity", "Kharkiv");
-        String [] arr = new String[1];
-        arr[0] = city;
+        String [] arr = {city};
         return arr;
     }
 
     public void setMyCity(String city){
         prefs.edit().putString("myCity", city).commit();
+        addCity(city);
+    }
+
+    private void addCity(String city) {
         String s = prefs.getString("cities", "Kharkiv");
         String [] arr = TextUtils.split(s, ",");
         boolean flag = false;
@@ -37,8 +42,13 @@ public class Cities {
         String s = TextUtils.join(",", cities);
         prefs.edit().putString("cities", s).commit();
     }
+
     public String [] getCities(){
         String s = prefs.getString("cities", "Kharkiv");
         return TextUtils.split(s, ",");
+    }
+
+    public void setCity(String city){
+        addCity(city);
     }
 }
