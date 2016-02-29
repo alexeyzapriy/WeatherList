@@ -28,7 +28,7 @@ public class MainActivity extends AppCompatActivity
 
     public RequestQueue queue;
 
-    //private Cities cities;
+    private Cities cities;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,12 +56,8 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         queue = Volley.newRequestQueue(this);
-/*
-        String[] arrCities = {"lviv", "london", "rome", "kharkiv", "zmiiv"};
+
         cities = new Cities(this);
-        cities.setMyCity("zmiiv");
-        cities.setCities(arrCities);
-*/
         setCardsListFragment(false);
 
     }

@@ -13,7 +13,7 @@ public class Cities {
     }
 
     public String [] getMyCity(){
-        String city = prefs.getString("myCity", "Kharkiv");
+        String city = prefs.getString("myCity", "");
         String [] arr = {city};
         return arr;
     }
@@ -24,17 +24,21 @@ public class Cities {
     }
 
     private void addCity(String city) {
-        String s = prefs.getString("cities", "Kharkiv");
-        String [] arr = TextUtils.split(s, ",");
-        boolean flag = false;
-        for (String i: arr) {
-            if(i.compareToIgnoreCase(city) == 0){
-                flag = true;
+        if(!prefs.contains("cities")){
+            prefs.edit().putString("cities", city).commit();
+        }else {
+            String s = prefs.getString("cities", "");
+            String[] arr = TextUtils.split(s, ",");
+            boolean flag = false;
+            for (String i : arr) {
+                if (i.compareToIgnoreCase(city) == 0) {
+                    flag = true;
+                }
             }
-        }
 
-        if(!flag){
-            prefs.edit().putString("cities", s + ", " + city).commit();
+            if (!flag) {
+                prefs.edit().putString("cities", s + "," + city).commit();
+            }
         }
     }
 
@@ -44,8 +48,14 @@ public class Cities {
     }
 
     public String [] getCities(){
-        String s = prefs.getString("cities", "Kharkiv");
-        return TextUtils.split(s, ",");
+        if(prefs.contains("cities")) {
+            String s = prefs.getString("cities", "");
+            return TextUtils.split(s, ",");
+        }else{
+            String [] arr = {"zmiiv"};
+            prefs.edit().putString("cities", "zmiiv").commit();
+            return arr;
+        }
     }
 
     public void setCity(String city){
