@@ -30,16 +30,13 @@ import java.util.ArrayList;
 public class CardsListFragment extends Fragment {
 
     public static final String IS_MY_CITY = "isMyCity";
-    private FrameLayout mMainContainer;
     private Cities cities;
     private boolean mIsMyCity;
     private ArrayList<WeatherModel> mData = new ArrayList<>();
-    private OnFragmentInteractionListener mListener;
     private CardsRecyclerAdapter mAdapter;
     private RecyclerView mRecyclerView;
 
     public CardsListFragment() {
-        // Required empty public constructor
     }
 
     @Override
@@ -54,10 +51,11 @@ public class CardsListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         cities = new Cities(getActivity());
-        if(mIsMyCity)
+        if (mIsMyCity)
             makeWeatherObj(cities.getMyCity());
         else
             makeWeatherObj(cities.getCities());
+
         mRecyclerView = (RecyclerView) inflater.inflate(R.layout.recycler_view, container, false);
         final LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
@@ -67,39 +65,22 @@ public class CardsListFragment extends Fragment {
         return mRecyclerView;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
+
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
     }
 
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
-    }
-
-    private void makeWeatherObj(final String[] cities) {
+    private void makeWeatherObj(final ArrayList<String> cities) {
         final Gson gson = new GsonBuilder().serializeNulls().create();
-        for (int i = 0; i < cities.length; i++) {
-            String url = String.format(Consts.WEATHER_SERVICE_URL, cities[i]);
+        for (int i = 0; i < cities.size(); i++) {
+            String url = String.format(Consts.WEATHER_SERVICE_URL, cities.get(i));
             StringRequest request = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
 
                 @Override
@@ -107,7 +88,7 @@ public class CardsListFragment extends Fragment {
                     Log.i("Weather Response", response);
                     try {
                         WeatherModel weather = gson.fromJson(response, WeatherModel.class);
-                        onDataReceived(weather, cities.length);
+                        onDataReceived(weather, cities.size());
                     } catch (Exception e) {
                         Log.e("SimpleWeather", "One or more fields not found in the JSON data: " + e);
                     }

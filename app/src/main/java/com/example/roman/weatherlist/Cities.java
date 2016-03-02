@@ -4,29 +4,33 @@ import android.app.Activity;
 import android.content.SharedPreferences;
 import android.text.TextUtils;
 
+import java.util.ArrayList;
+import java.util.Collections;
+
 public class Cities {
     private SharedPreferences prefs;
 
-    public Cities(Activity activity){
+    public Cities(Activity activity) {
         prefs = activity.getPreferences(Activity.MODE_PRIVATE);
 
     }
 
-    public String [] getMyCity(){
+    public ArrayList<String> getMyCity() {
         String city = prefs.getString("myCity", "");
-        String [] arr = {city};
+        ArrayList arr = new ArrayList();
+        arr.add(city);
         return arr;
     }
 
-    public void setMyCity(String city){
+    public void setMyCity(String city) {
         prefs.edit().putString("myCity", city).commit();
         addCity(city);
     }
 
     private void addCity(String city) {
-        if(!prefs.contains("cities")){
+        if (!prefs.contains("cities")) {
             prefs.edit().putString("cities", city).commit();
-        }else {
+        } else {
             String s = prefs.getString("cities", "");
             String[] arr = TextUtils.split(s, ",");
             boolean flag = false;
@@ -42,23 +46,25 @@ public class Cities {
         }
     }
 
-    public void setCities(String [] cities){
+    public void setCities(ArrayList<String> cities) {
         String s = TextUtils.join(",", cities);
         prefs.edit().putString("cities", s).commit();
     }
 
-    public String [] getCities(){
-        if(prefs.contains("cities")) {
+    public ArrayList<String> getCities() {
+        ArrayList arr = new ArrayList();
+        if (prefs.contains("cities")) {
             String s = prefs.getString("cities", "");
-            return TextUtils.split(s, ",");
-        }else{
-            String [] arr = {"zmiiv"};
+            Collections.addAll(arr, TextUtils.split(s, ","));
+            return arr;
+        } else {
+            arr.add("zmiiv");
             prefs.edit().putString("cities", "zmiiv").commit();
             return arr;
         }
     }
 
-    public void setCity(String city){
+    public void setCity(String city) {
         addCity(city);
     }
 }

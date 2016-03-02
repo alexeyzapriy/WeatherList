@@ -1,6 +1,5 @@
 package com.example.roman.weatherlist;
 
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -10,7 +9,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -23,12 +21,9 @@ import com.example.roman.weatherlist.fragments.ManageFragment;
 import com.example.roman.weatherlist.fragments.SettingsFragment;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener,
-                   CardsListFragment.OnFragmentInteractionListener {
+        implements NavigationView.OnNavigationItemSelectedListener {
 
     public RequestQueue queue;
-
-    private Cities cities;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,8 +51,6 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         queue = Volley.newRequestQueue(this);
-
-        cities = new Cities(this);
         setCardsListFragment(false);
 
     }
@@ -115,7 +108,7 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-    private void setCardsListFragment( boolean isMyCity) {
+    private void setCardsListFragment(boolean isMyCity) {
         Bundle bundle = new Bundle();
         bundle.putBoolean(CardsListFragment.IS_MY_CITY, isMyCity);
         CardsListFragment cardsListFragment = new CardsListFragment();
@@ -125,8 +118,4 @@ public class MainActivity extends AppCompatActivity
                 .commit();
     }
 
-    @Override
-    public void onFragmentInteraction(Uri uri) {
-        Log.i("Fragment", "uri: " + uri.toString());
-    }
 }
