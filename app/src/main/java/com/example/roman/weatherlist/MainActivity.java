@@ -88,7 +88,15 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.your_city) {
-            setCardsListFragment(true);
+
+            if (item.getTitle().equals("Your city")) {
+                item.setTitle("Cities");
+                setCardsListFragment(true);
+            } else {
+                item.setTitle("Your city");
+                setCardsListFragment(false);
+            }
+
         } else if (id == R.id.settings) {
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.main_container, new SettingsFragment())
