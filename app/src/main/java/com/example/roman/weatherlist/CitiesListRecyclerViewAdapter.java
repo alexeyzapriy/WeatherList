@@ -49,8 +49,10 @@ public class CitiesListRecyclerViewAdapter extends RecyclerView.Adapter<CitiesLi
         btnDelCity.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mDataset.remove(position);
                 notifyItemRemoved(position);
+                notifyDataSetChanged();
+                mDataset.remove(position);
+                cities.setCities(mDataset);
             }
         });
     }
