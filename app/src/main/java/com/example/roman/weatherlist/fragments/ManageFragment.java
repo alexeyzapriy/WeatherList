@@ -40,7 +40,7 @@ public class ManageFragment extends Fragment {
                 builder.setTitle("Change my city");
                 final EditText input = new EditText(getActivity());
                 input.setInputType(InputType.TYPE_CLASS_TEXT);
-                input.setText(cities.getMyCity().get(0));
+                input.setText(cities.getMyCity());
                 builder.setView(input);
                 builder.setPositiveButton("ok", new DialogInterface.OnClickListener() {
 

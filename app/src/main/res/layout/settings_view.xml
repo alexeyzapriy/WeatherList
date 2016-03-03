@@ -21,7 +21,8 @@
         <RadioGroup
             android:layout_width="132dp"
             android:layout_height="83dp"
-            android:layout_gravity="right|center_vertical">
+            android:layout_gravity="right|center_vertical"
+            android:id="@+id/rgr" >
 
             <RadioButton
                 android:layout_width="wrap_content"

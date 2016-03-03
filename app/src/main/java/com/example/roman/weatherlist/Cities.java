@@ -12,14 +12,10 @@ public class Cities {
 
     public Cities(Activity activity) {
         prefs = activity.getPreferences(Activity.MODE_PRIVATE);
-
     }
 
-    public ArrayList<String> getMyCity() {
-        String city = prefs.getString("myCity", "");
-        ArrayList arr = new ArrayList();
-        arr.add(city);
-        return arr;
+    public String getMyCity() {
+        return prefs.getString("myCity", "");
     }
 
     public void setMyCity(String city) {

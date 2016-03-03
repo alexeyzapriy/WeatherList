@@ -1,7 +1,5 @@
 package com.example.roman.weatherlist.fragments;
 
-import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -10,7 +8,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -28,10 +25,7 @@ import com.google.gson.GsonBuilder;
 import java.util.ArrayList;
 
 public class CardsListFragment extends Fragment {
-
-    public static final String IS_MY_CITY = "isMyCity";
     private Cities cities;
-    private boolean mIsMyCity;
     private ArrayList<WeatherModel> mData = new ArrayList<>();
     private CardsRecyclerAdapter mAdapter;
     private RecyclerView mRecyclerView;
@@ -42,20 +36,13 @@ public class CardsListFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mIsMyCity = getArguments().getBoolean(IS_MY_CITY);
-        }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         cities = new Cities(getActivity());
-        if (mIsMyCity)
-            makeWeatherObj(cities.getMyCity());
-        else
-            makeWeatherObj(cities.getCities());
-
+        makeWeatherObj(cities.getCities());
         mRecyclerView = (RecyclerView) inflater.inflate(R.layout.recycler_view, container, false);
         final LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
@@ -63,18 +50,6 @@ public class CardsListFragment extends Fragment {
         mAdapter = new CardsRecyclerAdapter(getActivity());
         mRecyclerView.setAdapter(mAdapter);
         return mRecyclerView;
-    }
-
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
     }
 
     private void makeWeatherObj(final ArrayList<String> cities) {

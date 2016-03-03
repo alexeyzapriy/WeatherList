@@ -1,7 +1,5 @@
 package com.example.roman.weatherlist;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -11,7 +9,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,6 +19,7 @@ import com.android.volley.toolbox.Volley;
 import com.example.roman.weatherlist.fragments.CardsListFragment;
 import com.example.roman.weatherlist.fragments.InfoFragment;
 import com.example.roman.weatherlist.fragments.ManageFragment;
+import com.example.roman.weatherlist.fragments.MyCityFragment;
 import com.example.roman.weatherlist.fragments.SettingsFragment;
 
 public class MainActivity extends AppCompatActivity
@@ -58,8 +56,10 @@ public class MainActivity extends AppCompatActivity
             Toast.makeText(this, "No internet connection", Toast.LENGTH_LONG).show();
         }
         queue = Volley.newRequestQueue(this);
-        setCardsListFragment(false);
 
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.main_container, new CardsListFragment())
+                .commit();
     }
 
     @Override
@@ -98,10 +98,14 @@ public class MainActivity extends AppCompatActivity
 
             if (item.getTitle().equals("Your city")) {
                 item.setTitle("Cities");
-                setCardsListFragment(true);
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.main_container, new MyCityFragment())
+                        .commit();
             } else {
                 item.setTitle("Your city");
-                setCardsListFragment(false);
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.main_container, new CardsListFragment())
+                        .commit();
             }
 
         } else if (id == R.id.settings) {
@@ -121,16 +125,6 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
-    }
-
-    private void setCardsListFragment(boolean isMyCity) {
-        Bundle bundle = new Bundle();
-        bundle.putBoolean(CardsListFragment.IS_MY_CITY, isMyCity);
-        CardsListFragment cardsListFragment = new CardsListFragment();
-        cardsListFragment.setArguments(bundle);
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.main_container, cardsListFragment)
-                .commit();
     }
 
 }
