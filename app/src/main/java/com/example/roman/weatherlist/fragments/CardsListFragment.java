@@ -56,26 +56,37 @@ public class CardsListFragment extends Fragment {
         final Gson gson = new GsonBuilder().serializeNulls().create();
         for (int i = 0; i < cities.size(); i++) {
             String url = String.format(Consts.WEATHER_SERVICE_URL, cities.get(i));
-            StringRequest request = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
 
-                @Override
-                public void onResponse(String response) {
-                    Log.i("Weather Response", response);
-                    try {
-                        WeatherModel weather = gson.fromJson(response, WeatherModel.class);
-                        onDataReceived(weather, cities.size());
-                    } catch (Exception e) {
-                        Log.e("SimpleWeather", "One or more fields not found in the JSON data: " + e);
+            WeatherModel weather = MySingleton.getInstance(getActivity()).fetchFromVolleyCache(url, WeatherModel.class);
+            if (weather == null) {
+                StringRequest request = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+
+                    @Override
+                    public void onResponse(String response) {
+                        Log.i("Weather Response", response);
+                        try {
+                            WeatherModel weather = gson.fromJson(response, WeatherModel.class);
+                            onDataReceived(weather, cities.size());
+                        } catch (Exception e) {
+                            Log.e("SimpleWeather", "One or more fields not found in the JSON data: " + e);
+                        }
                     }
-                }
-            }, new Response.ErrorListener() {
+                }, new Response.ErrorListener() {
 
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                }
-            });
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                    }
+                });
 
-            MySingleton.getInstance(getActivity()).addToRequestQueue(request);
+                MySingleton.getInstance(getActivity()).addToRequestQueue(request);
+
+            } else {
+                try {
+                    onDataReceived(weather, cities.size());
+                } catch (Exception e) {
+                    Log.e("SimpleWeather", "One or more fields not found in the JSON data: " + e);
+                }
+            }
         }
 
     }
