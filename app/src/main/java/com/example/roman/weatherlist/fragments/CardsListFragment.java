@@ -25,6 +25,7 @@ import com.google.gson.GsonBuilder;
 import java.util.ArrayList;
 
 public class CardsListFragment extends Fragment {
+    private static final String TAG = "CardsList";
     private Cities cities;
     private ArrayList<WeatherModel> mData = new ArrayList<>();
     private CardsRecyclerAdapter mAdapter;
@@ -41,21 +42,23 @@ public class CardsListFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        cities = new Cities(getActivity());
-        makeWeatherObj(cities.getCities());
+        //we need to create list first
         mRecyclerView = (RecyclerView) inflater.inflate(R.layout.recycler_view, container, false);
         final LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mRecyclerView.setLayoutManager(layoutManager);
         mAdapter = new CardsRecyclerAdapter(getActivity());
         mRecyclerView.setAdapter(mAdapter);
+        //then fetch the data
+        cities = new Cities(getActivity());
+        makeWeatherObj(cities.getCities());
         return mRecyclerView;
     }
 
     private void makeWeatherObj(final ArrayList<String> cities) {
         final Gson gson = new GsonBuilder().serializeNulls().create();
         for (int i = 0; i < cities.size(); i++) {
-            String url = String.format(Consts.WEATHER_SERVICE_URL, cities.get(i));
+            final String url = String.format(Consts.WEATHER_SERVICE_URL, cities.get(i));
 
             WeatherModel weather = MySingleton.getInstance(getActivity()).fetchFromVolleyCache(url, WeatherModel.class);
             if (weather == null) {
@@ -63,12 +66,12 @@ public class CardsListFragment extends Fragment {
 
                     @Override
                     public void onResponse(String response) {
-                        Log.i("Weather Response", response);
+                        Log.i("Response(web)", response);
                         try {
                             WeatherModel weather = gson.fromJson(response, WeatherModel.class);
                             onDataReceived(weather, cities.size());
                         } catch (Exception e) {
-                            Log.e("SimpleWeather", "One or more fields not found in the JSON data: " + e);
+                            Log.e(TAG, "fetch data from web (" + url + "): " + e);
                         }
                     }
                 }, new Response.ErrorListener() {
@@ -84,7 +87,7 @@ public class CardsListFragment extends Fragment {
                 try {
                     onDataReceived(weather, cities.size());
                 } catch (Exception e) {
-                    Log.e("SimpleWeather", "One or more fields not found in the JSON data: " + e);
+                    Log.e(TAG, "fetch data from cache(" + url + "): " + e);
                 }
             }
         }

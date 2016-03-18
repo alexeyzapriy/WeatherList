@@ -55,18 +55,23 @@ public class MySingleton {
         return mRequestQueue;
     }
 
-    public <Model> Model fetchFromVolleyCache(String url, Class<Model> classOfModel){
+    public <Model> Model fetchFromVolleyCache(String url, Class<Model> classOfModel) {
         Cache cache = mRequestQueue.getCache();
         Cache.Entry entry = cache.get(url);
-        if(entry != null) {
-            try {
-                return mGson.fromJson(new String(entry.data, "UTF-8"), classOfModel);
-                } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-                }
-            }
-        return null;
+        if (entry == null) return null;
+
+        if (System.currentTimeMillis() - Consts.CACHE_MAX_AGE > entry.serverDate){
+            cache.remove(url);
+            return null;
         }
+
+        try {
+            return mGson.fromJson(new String(entry.data, "UTF-8"), classOfModel);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 
     public <T> void addToRequestQueue(Request<T> req) {
         getRequestQueue().add(req);

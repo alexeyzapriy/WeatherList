@@ -18,7 +18,7 @@ public class CardsRecyclerAdapter extends RecyclerView.Adapter<CardsRecyclerAdap
 
     private Context context;
     private ArrayList <WeatherModel> mDataSet = new ArrayList<>();
-    private ImageLoader mImageLoader = MySingleton.getInstance(context).getImageLoader();
+    private ImageLoader mImageLoader;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public LinearLayout mCard;
@@ -30,6 +30,7 @@ public class CardsRecyclerAdapter extends RecyclerView.Adapter<CardsRecyclerAdap
 
     public CardsRecyclerAdapter(Context context) {
         this.context = context;
+        mImageLoader = MySingleton.getInstance(context).getImageLoader();
     }
 
     @Override

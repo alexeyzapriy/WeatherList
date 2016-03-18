@@ -26,6 +26,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 public class MyCityFragment extends Fragment {
+    private static final String TAG = "MyCity";
     private Context context;
     private Cities cities;
     private View view;
@@ -48,7 +49,7 @@ public class MyCityFragment extends Fragment {
 
     private void makeWeatherObj(String city) {
         final Gson gson = new GsonBuilder().serializeNulls().create();
-        String url = String.format(Consts.WEATHER_SERVICE_URL, city);
+        final String url = String.format(Consts.WEATHER_SERVICE_URL, city);
 
         WeatherModel weather = MySingleton.getInstance(getActivity()).fetchFromVolleyCache(url, WeatherModel.class);
         if (weather == null) {
@@ -61,7 +62,7 @@ public class MyCityFragment extends Fragment {
                         WeatherModel weather = gson.fromJson(response, WeatherModel.class);
                         fillTheFields(weather);
                     } catch (Exception e) {
-                        Log.e("SimpleWeather", "One or more fields not found in the JSON data: " + e);
+                        Log.e(TAG, "fetch data from web (" + url + "): " + e);
                     }
                 }
             }, new Response.ErrorListener() {
