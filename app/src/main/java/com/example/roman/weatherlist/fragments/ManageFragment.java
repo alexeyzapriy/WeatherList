@@ -1,7 +1,9 @@
 package com.example.roman.weatherlist.fragments;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.InputType;
@@ -48,6 +50,8 @@ public class ManageFragment extends Fragment {
                     public void onClick(DialogInterface dialog, int which) {
 
                         cities.setMyCity(input.getText().toString());
+                        SharedPreferences prefs = getActivity().getPreferences(Activity.MODE_PRIVATE);
+                        prefs.edit().putString("coord", "").commit();
                     }
                 });
                 builder.show();

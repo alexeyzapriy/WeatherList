@@ -1,5 +1,6 @@
 package com.example.roman.weatherlist;
 
+import android.app.Activity;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -16,9 +17,9 @@ import java.util.ArrayList;
 
 public class CardsRecyclerAdapter extends RecyclerView.Adapter<CardsRecyclerAdapter.ViewHolder> {
 
-    private Context context;
+    private Activity activity;
     private ArrayList <WeatherModel> mDataSet = new ArrayList<>();
-    private ImageLoader mImageLoader = MySingleton.getInstance(context).getImageLoader();
+    private ImageLoader mImageLoader;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public LinearLayout mCard;
@@ -29,7 +30,8 @@ public class CardsRecyclerAdapter extends RecyclerView.Adapter<CardsRecyclerAdap
     }
 
     public CardsRecyclerAdapter(Context context) {
-        this.context = context;
+        mImageLoader = MySingleton.getInstance(context).getImageLoader();
+        activity = (Activity)context;
     }
 
     @Override
@@ -49,7 +51,7 @@ public class CardsRecyclerAdapter extends RecyclerView.Adapter<CardsRecyclerAdap
         TextView tvDetails = (TextView) holder.mCard.findViewById(R.id.details_field);
         TextView tvTemperat = (TextView) holder.mCard.findViewById(R.id.current_temperature_field);
         NetworkImageView networkImageView = (NetworkImageView) holder.mCard.findViewById(R.id.weather_icon);
-        WeatherPresenter weatherPresenter = new WeatherPresenter(mDataSet.get(position));
+        WeatherPresenter weatherPresenter = new WeatherPresenter(mDataSet.get(position), activity);
 
         networkImageView.setImageUrl(weatherPresenter.getIconUrl(), mImageLoader);
         tvCity.setText(weatherPresenter.getCity() + ", " + weatherPresenter.getCountry());
@@ -58,7 +60,7 @@ public class CardsRecyclerAdapter extends RecyclerView.Adapter<CardsRecyclerAdap
                 + weatherPresenter.getHumidity()
                 + "\n" + "Pressure: "
                 + weatherPresenter.getPressure());
-        tvTemperat.setText(weatherPresenter.getTempC());
+        tvTemperat.setText(weatherPresenter.getTemp());
         tvUpdated.setText("Last update: " + weatherPresenter.getUpdateTime());
     }
 

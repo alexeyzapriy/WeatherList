@@ -15,7 +15,7 @@ public class Cities {
     }
 
     public String getMyCity() {
-        return prefs.getString("myCity", "");
+        return prefs.getString("myCity", "zmiiv");
     }
 
     public void setMyCity(String city) {

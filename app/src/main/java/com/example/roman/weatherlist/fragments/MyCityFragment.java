@@ -1,7 +1,9 @@
 package com.example.roman.weatherlist.fragments;
 
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -30,6 +32,8 @@ public class MyCityFragment extends Fragment {
     private Cities cities;
     private View view;
     private ImageLoader mImageLoader = MySingleton.getInstance(context).getImageLoader();
+    private static final String TAG = "MyCity";
+    private SharedPreferences prefs;
 
     public MyCityFragment() {
 
@@ -42,13 +46,23 @@ public class MyCityFragment extends Fragment {
         view = inflater.inflate(R.layout.fragment_my_city, container, false);
         context = getActivity();
         cities = new Cities(getActivity());
-        makeWeatherObj(cities.getMyCity());
+        prefs = getActivity().getPreferences(Activity.MODE_PRIVATE);
+        String coord = prefs.getString("coord", "");
+        if(coord.equals("")){
+            makeWeatherObj(cities.getMyCity());
+        }else{
+            String[] arrCoord = coord.split("_");
+            makeWeatherObjLoc(arrCoord[0], arrCoord[1]);
+        }
+
+
         return view;
     }
 
     private void makeWeatherObj(String city) {
         final Gson gson = new GsonBuilder().serializeNulls().create();
-        String url = String.format(Consts.WEATHER_SERVICE_URL, city);
+        String units = prefs.getString("units", "metric");
+        final String url = String.format(Consts.OPEN_WEATHER_MAP_API, city, units, Consts.OPEN_WEATHER_MAP_API_APP_ID);
 
         WeatherModel weather = MySingleton.getInstance(getActivity()).fetchFromVolleyCache(url, WeatherModel.class);
         if (weather == null) {
@@ -61,7 +75,40 @@ public class MyCityFragment extends Fragment {
                         WeatherModel weather = gson.fromJson(response, WeatherModel.class);
                         fillTheFields(weather);
                     } catch (Exception e) {
-                        Log.e("SimpleWeather", "One or more fields not found in the JSON data: " + e);
+                        Log.e(TAG, "fetch data from web (" + url + "): " + e);
+                    }
+                }
+            }, new Response.ErrorListener() {
+
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                }
+            });
+
+            MySingleton.getInstance(getActivity()).addToRequestQueue(request);
+        } else {
+            fillTheFields(weather);
+        }
+    }
+
+    private void makeWeatherObjLoc(String lat, String lon) {
+        final Gson gson = new GsonBuilder().serializeNulls().create();
+        String units = prefs.getString("units", "metric");
+        final String url = String.format(Consts.OPEN_WEATHER_MAP_API_COORD, lat, lon, units, Consts.OPEN_WEATHER_MAP_API_APP_ID);
+
+        WeatherModel weather = MySingleton.getInstance(getActivity()).fetchFromVolleyCache(url, WeatherModel.class);
+        if (weather == null) {
+            StringRequest request = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+
+                @Override
+                public void onResponse(String response) {
+                    Log.i("Weather Response", response);
+                    try {
+                        WeatherModel weather = gson.fromJson(response, WeatherModel.class);
+
+                        fillTheFields(weather);
+                    } catch (Exception e) {
+                        Log.e(TAG, "fetch data from web (" + url + "): " + e);
                     }
                 }
             }, new Response.ErrorListener() {
@@ -83,7 +130,7 @@ public class MyCityFragment extends Fragment {
         TextView tvDetails = (TextView) view.findViewById(R.id.details_field);
         TextView tvTemperat = (TextView) view.findViewById(R.id.current_temperature_field);
         NetworkImageView networkImageView = (NetworkImageView) view.findViewById(R.id.weather_icon);
-        WeatherPresenter weatherPresenter = new WeatherPresenter(wm);
+        WeatherPresenter weatherPresenter = new WeatherPresenter(wm, getActivity());
 
         networkImageView.setImageUrl(weatherPresenter.getIconUrl(), mImageLoader);
         tvCity.setText(weatherPresenter.getCity() + ", " + weatherPresenter.getCountry());
@@ -92,7 +139,7 @@ public class MyCityFragment extends Fragment {
                 + weatherPresenter.getHumidity()
                 + "\n" + "Pressure: "
                 + weatherPresenter.getPressure());
-        tvTemperat.setText(weatherPresenter.getTempC());
+        tvTemperat.setText(weatherPresenter.getTemp());
         tvUpdated.setText("Last update: " + weatherPresenter.getUpdateTime());
     }
 }

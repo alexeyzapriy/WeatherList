@@ -1,5 +1,7 @@
 package com.example.roman.weatherlist.fragments;
 
+import android.app.Activity;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -29,8 +31,11 @@ public class CardsListFragment extends Fragment {
     private ArrayList<WeatherModel> mData = new ArrayList<>();
     private CardsRecyclerAdapter mAdapter;
     private RecyclerView mRecyclerView;
+    private static final String TAG = "CardsList";
+    private SharedPreferences prefs;
 
     public CardsListFragment() {
+
     }
 
     @Override
@@ -41,21 +46,24 @@ public class CardsListFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        cities = new Cities(getActivity());
-        makeWeatherObj(cities.getCities());
+
         mRecyclerView = (RecyclerView) inflater.inflate(R.layout.recycler_view, container, false);
         final LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mRecyclerView.setLayoutManager(layoutManager);
         mAdapter = new CardsRecyclerAdapter(getActivity());
         mRecyclerView.setAdapter(mAdapter);
+        cities = new Cities(getActivity());
+        prefs = getActivity().getPreferences(Activity.MODE_PRIVATE);
+        makeWeatherObj(cities.getCities());
         return mRecyclerView;
     }
 
     private void makeWeatherObj(final ArrayList<String> cities) {
         final Gson gson = new GsonBuilder().serializeNulls().create();
+        String units = prefs.getString("units", "metric");
         for (int i = 0; i < cities.size(); i++) {
-            String url = String.format(Consts.WEATHER_SERVICE_URL, cities.get(i));
+            final String url = String.format(Consts.OPEN_WEATHER_MAP_API, cities.get(i), units, Consts.OPEN_WEATHER_MAP_API_APP_ID);
 
             WeatherModel weather = MySingleton.getInstance(getActivity()).fetchFromVolleyCache(url, WeatherModel.class);
             if (weather == null) {
@@ -63,12 +71,12 @@ public class CardsListFragment extends Fragment {
 
                     @Override
                     public void onResponse(String response) {
-                        Log.i("Weather Response", response);
+                        Log.i("Response(web)", response);
                         try {
                             WeatherModel weather = gson.fromJson(response, WeatherModel.class);
                             onDataReceived(weather, cities.size());
                         } catch (Exception e) {
-                            Log.e("SimpleWeather", "One or more fields not found in the JSON data: " + e);
+                            Log.e(TAG, "fetch data from web (" + url + "): " + e);
                         }
                     }
                 }, new Response.ErrorListener() {
@@ -84,7 +92,7 @@ public class CardsListFragment extends Fragment {
                 try {
                     onDataReceived(weather, cities.size());
                 } catch (Exception e) {
-                    Log.e("SimpleWeather", "One or more fields not found in the JSON data: " + e);
+                    Log.e(TAG, "fetch data from cache(" + url + "): " + e);
                 }
             }
         }
