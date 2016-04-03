@@ -51,7 +51,8 @@ public class MyCityFragment extends Fragment {
         if(coord.equals("")){
             makeWeatherObj(cities.getMyCity());
         }else{
-            String[] arrCoord = coord.split("_");
+            String new_str = coord.replace (',', '.');
+            String[] arrCoord = new_str.split("_");
             makeWeatherObjLoc(arrCoord[0], arrCoord[1]);
         }
 

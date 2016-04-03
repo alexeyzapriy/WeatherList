@@ -30,6 +30,7 @@ public class SettingsFragment extends Fragment {
     private SharedPreferences prefs;
     private Activity activity;
     private Subscription subscription;
+
     public SettingsFragment() {
 
     }
@@ -96,12 +97,12 @@ public class SettingsFragment extends Fragment {
                         .subscribe(new Action1<Location>() {
                             @Override
                             public void call(Location location) {
-                                myLoc.setText( String.format(
+                                myLoc.setText(String.format(
                                         "Coordinates: lat = %1$.4f, lon = %2$.4f, time = %3$tF %3$tT",
                                         location.getLatitude(), location.getLongitude(), new Date(
                                                 location.getTime())));
 
-                                prefs.edit().putString("coord", String.format("%1$d_%2$d", (int)location.getLatitude(), (int)location.getLongitude())).commit();
+                                prefs.edit().putString("coord", location.getLatitude() + "_" + location.getLongitude()).commit();
                             }
                         });
 
