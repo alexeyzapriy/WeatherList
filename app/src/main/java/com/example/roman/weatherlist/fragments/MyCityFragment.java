@@ -106,7 +106,7 @@ public class MyCityFragment extends Fragment {
                     Log.i("Weather Response", response);
                     try {
                         WeatherModel weather = gson.fromJson(response, WeatherModel.class);
-
+                        cities.setMyCity(weather.name);
                         fillTheFields(weather);
                     } catch (Exception e) {
                         Log.e(TAG, "fetch data from web (" + url + "): " + e);

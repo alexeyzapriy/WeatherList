@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
+import com.example.roman.weatherlist.fragments.AroundFragment;
 import com.example.roman.weatherlist.fragments.CardsListFragment;
 import com.example.roman.weatherlist.fragments.InfoFragment;
 import com.example.roman.weatherlist.fragments.ManageFragment;
@@ -107,6 +108,10 @@ public class MainActivity extends AppCompatActivity
                         .replace(R.id.main_container, new CardsListFragment())
                         .commit();
             }
+        } else if (id == R.id.weather_around) {
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.main_container, new AroundFragment())
+                    .commit();
 
         } else if (id == R.id.settings) {
             getSupportFragmentManager().beginTransaction()

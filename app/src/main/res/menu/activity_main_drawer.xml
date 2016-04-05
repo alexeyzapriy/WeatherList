@@ -7,6 +7,10 @@
             android:icon="@drawable/ic_account_balance_black_18dp"
             android:title="Your city" />
         <item
+            android:id="@+id/weather_around"
+            android:icon="@drawable/ic_explore_black_18dp"
+            android:title="Weather around" />
+        <item
             android:id="@+id/manage_cities"
             android:icon="@drawable/ic_card_travel_black_18dp"
             android:title="Manage cities" />
