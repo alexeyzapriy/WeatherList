@@ -1,9 +1,7 @@
 package com.example.roman.weatherlist.fragments;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -19,9 +17,12 @@ import com.android.volley.toolbox.StringRequest;
 import com.example.roman.weatherlist.Consts;
 import com.example.roman.weatherlist.MySingleton;
 import com.example.roman.weatherlist.R;
+import com.example.roman.weatherlist.models.SeveralCitiesWeatherModel;
 import com.example.roman.weatherlist.models.WeatherModel;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+
+import java.util.List;
 
 
 public class AroundFragment extends Fragment {
@@ -70,8 +71,8 @@ public class AroundFragment extends Fragment {
                 public void onResponse(String response) {
                     Log.i("Weather Response", response);
                     try {
-                        WeatherModel[] weather = gson.fromJson(response, WeatherModel[].class);
-                        fillTheFields(weather);
+                        SeveralCitiesWeatherModel weather = gson.fromJson(response, SeveralCitiesWeatherModel.class);
+                        fillTheFields(weather.list);
                     } catch (Exception e) {
                         Log.e(TAG, "fetch data from web (" + url + "): " + e);
                     }
@@ -86,11 +87,12 @@ public class AroundFragment extends Fragment {
             MySingleton.getInstance(getActivity()).addToRequestQueue(request);
 
     }
-    private void fillTheFields(WeatherModel[] wm) {
+
+    private void fillTheFields(List<WeatherModel> wm) {
         TextView tvResp = (TextView) view.findViewById(R.id.json_response);
         String str = "";
-        for (int i =0; i<wm.length;i++){
-            str+=wm[i].name+" ";
+        for (int i = 0; i < wm.size(); i++) {
+            str += wm.get(i).name + " ";
         }
         tvResp.setText(str);
     }
